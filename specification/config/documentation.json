@@ -1,0 +1,329 @@
+{
+  "description": "### Set of rules to enforce documentation best practices\r\n\r\nTo use these rules: \r\n\r\n1. Go to your Stoplight workspace.\r\n2. Create a [style guide project](https://meta.stoplight.io/docs/platform/364e30f79daa0-create-a-style-guide) OR edit a project that has an API.\r\n3. Select **Manage Style Guides**.\r\n4. Enable `Documentation` from list of public style guides.\r\n\r\nYou can then :\r\n\r\n- Use the style guide as-is to [automatically lint](https://meta.stoplight.io/docs/platform/7975f76a794c4-validation-and-linting) your API files\r\n- [Disable individual rules](https://meta.stoplight.io/docs/platform/3f80fd36750e3-disable-inherited-rules)  that do not follow your organization's standards\r\n- [Reuse and customize rules](https://meta.stoplight.io/docs/platform/2331c5241ddfc) to meet your needs\r\n",
+  "formats": [
+    "oas2",
+    "oas3",
+    "oas3.0",
+    "oas3.1"
+  ],
+  "aliases": {
+    "PathItem": {
+      "description": "",
+      "targets": [
+        {
+          "formats": [
+            "oas2"
+          ],
+          "given": [
+            "$.paths[*]"
+          ]
+        },
+        {
+          "formats": [
+            "oas3"
+          ],
+          "given": [
+            "$.paths[*]"
+          ]
+        }
+      ]
+    },
+    "OperationObject": {
+      "description": "",
+      "targets": [
+        {
+          "formats": [
+            "oas2"
+          ],
+          "given": [
+            "#PathItem[get,put,post,delete,options,head,patch,trace]"
+          ]
+        },
+        {
+          "formats": [
+            "oas3"
+          ],
+          "given": [
+            "#PathItem[get,put,post,delete,options,head,patch,trace]"
+          ]
+        }
+      ]
+    },
+    "DescribableObjects": {
+      "description": "",
+      "targets": [
+        {
+          "formats": [
+            "oas2"
+          ],
+          "given": [
+            "$.info",
+            "$.tags[*]",
+            "#OperationObject",
+            "$.paths[*][*].responses[*]",
+            "$..parameters[?(@ && @.in)]",
+            "$.definitions[*]"
+          ]
+        },
+        {
+          "formats": [
+            "oas3"
+          ],
+          "given": [
+            "$.info",
+            "$.tags[*]",
+            "#OperationObject",
+            "$.paths[*][*].responses[*]",
+            "$..parameters[?(@ && @.in)]",
+            "$.components.schemas[*]",
+            "$.servers[*]"
+          ]
+        }
+      ]
+    },
+    "SharedSchemaObjects": {
+      "description": "",
+      "targets": [
+        {
+          "formats": [
+            "oas2"
+          ],
+          "given": [
+            "$.definitions[*]"
+          ]
+        },
+        {
+          "formats": [
+            "oas3"
+          ],
+          "given": [
+            "$.components.schemas[*]"
+          ]
+        }
+      ]
+    },
+    "MediaTypeObjects": {
+      "description": "",
+      "targets": [
+        {
+          "formats": [
+            "oas2"
+          ],
+          "given": [
+            "$.paths[*][*]..parameters[?(@ && @.in == \"body\")]",
+            "$.paths[*][*].responses[*]"
+          ]
+        },
+        {
+          "formats": [
+            "oas3"
+          ],
+          "given": [
+            "$.paths[*][*].requestBody.content[*]",
+            "$.paths[*][*].responses[*].content[*]"
+          ]
+        }
+      ]
+    }
+  },
+  "rules": {
+    "docs-descriptions": {
+      "given": [
+        "#DescribableObjects"
+      ],
+      "severity": "warn",
+      "then": [
+        {
+          "function": "truthy",
+          "field": "description"
+        },
+        {
+          "function": "length",
+          "functionOptions": {
+            "min": 20
+          },
+          "field": "description"
+        },
+        {
+          "function": "pattern",
+          "functionOptions": {
+            "match": "\\.$"
+          },
+          "field": "description"
+        },
+        {
+          "function": "pattern",
+          "functionOptions": {
+            "match": "/^[A-Z]/"
+          },
+          "field": "description"
+        }
+      ],
+      "description": "Descriptions should be provided for describable objects, such as `info`, `tags`, `operations`, `parameters`, and more. Descriptions should be a minimum of 20 characters, start with a capital letter, and end with a period.\r\n\r\nDocumentation tools render descriptions to provide more context to users of the API who are not as familiar with the concepts as the API designers are. \r\n\r\n**Invalid Example**\r\n\r\nThis example is invalid because the description is too short and does not end with a period.\r\n\r\n```yaml\r\nresponses:\r\n  '200':\r\n     description: User Found\r\n```\r\n\r\n**Valid Example**\r\n\r\nThis example is valid because it contains more than 20 characters and ends with a period.\r\n\r\n```yaml\r\nresponses:\r\n  '200':\r\n     description: User with matching last name found.\r\n```",
+      "message": "{{error}}."
+    },
+    "docs-info-contact": {
+      "given": [
+        "$"
+      ],
+      "severity": "warn",
+      "then": {
+        "function": "truthy",
+        "field": "info.contact"
+      },
+      "description": "`Info` object should include contact information.\r\n\r\nMake sure that API consumers know who to contact, even if you work at the same company. You can include contact information for a specific developer or a team, depending on your organization.\r\n\r\n**Invalid Example***\r\n\r\nThs example is invalid because there is no contact information.\r\n\r\n```yaml\r\ninfo:\r\n  title: Users\r\n  version: ...\r\n  description: ...\r\nservers:\r\n   ...\r\n```\r\n\r\n**Valid Example**\r\n\r\nThs example is valid because it contains contact information.\r\n\r\n```yaml\r\ninfo:\r\n  title: Users\r\n  version: ...\r\n  description: ...\r\n  contact:\r\n    name: Nauman\r\n    url: stoplight.io\r\n    email: nauman@stoplight.io\r\nservers:\r\n  ...\r\n```"
+    },
+    "docs-parameters-anything-useful": {
+      "given": [
+        "$.paths[*]..parameters[?(@ && @.in != \"body\")]"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "schema",
+        "functionOptions": {
+          "schema": {
+            "type": "object",
+            "oneOf": [
+              {
+                "required": [
+                  "x-example"
+                ]
+              },
+              {
+                "required": [
+                  "example"
+                ]
+              },
+              {
+                "required": [
+                  "default"
+                ]
+              },
+              {
+                "required": [
+                  "enum"
+                ]
+              },
+              {
+                "required": [
+                  "format"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "description": "**OAS 2 only**\r\n\r\nParameter must contain an example, default, format, or enum.\r\n\r\nTo make a good sample request, doc tools need an x-example, default, enum, or maybe even a format. The more information you can provide, the more useful the sample request.\r\n\r\n**Invalid Example**\r\n\r\nThis example is invalid because it does not contain an example, default, format, or enum.\r\n\r\n```yaml\r\npaths:\r\n  '/users/{userId}':\r\n    parameters:\r\n      - type: integer\r\n        name: userId\r\n        in: path\r\n```\r\n\r\n**Valid Example**\r\n\r\nThis example is valid because it includes a format for the integer.\r\n\r\n```yaml\r\npaths:\r\n  '/users/{userId}':\r\n    parameters:\r\n      - type: integer\r\n        name: userId\r\n        in: path\r\n        format: int32\r\n```",
+      "message": "No example or schema provided for {{property}}",
+      "formats": [
+        "oas2"
+      ]
+    },
+    "docs-parameters-examples-or-schema": {
+      "given": [
+        "$.paths[*]..parameters[*]"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "schema",
+        "functionOptions": {
+          "schema": {
+            "type": "object",
+            "oneOf": [
+              {
+                "required": [
+                  "example"
+                ]
+              },
+              {
+                "required": [
+                  "examples"
+                ]
+              },
+              {
+                "required": [
+                  "schema"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "description": "\r\n**OAS 3.x only**\r\n\r\nPath parameter must contain a defined schema or examples.\r\n\r\nWithout providing a well-defined schema or examples, API consumers do not have the information they need to interact with the API.\r\n\r\n**Invalid Example**\r\n\r\nThis example is invalid because a schema or example is not defined.\r\n\r\n```yaml\r\npaths:\r\n  '/users/{userId}':\r\n    parameters:\r\n      - name: userId\r\n        in: path\r\n```\r\n\r\n**Valid Example**\r\n\r\nThis example is valid because a schema or example is defined.\r\n\r\n```yaml\r\npaths:\r\n  '/users/{userId}':\r\n    parameters:\r\n      - schema:\r\n          type: integer\r\n          example: 1236\r\n        name: userId\r\n        in: path\r\n```",
+      "message": "No example or schema provided for {{property}}",
+      "formats": [
+        "oas3"
+      ]
+    },
+    "docs-media-types-examples-or-schema": {
+      "given": [
+        "#MediaTypeObjects"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "schema",
+        "functionOptions": {
+          "schema": {
+            "type": "object",
+            "anyOf": [
+              {
+                "required": [
+                  "example"
+                ]
+              },
+              {
+                "required": [
+                  "examples"
+                ]
+              },
+              {
+                "required": [
+                  "schema"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "description": "Media object must contain a defined schema or examples.\r\n\r\nWithout providing a well-defined schema or examples, API consumers do not have the information they need to interact with the API.\r\n\r\n**Invalid Example**\r\n\r\nThis example is invalid because a schema and examples are not defined.\r\n\r\n```yaml\r\nget:\r\n  responses:\r\n    '200':\r\n      description: User Found\r\n      content:\r\n        application/json:\r\n```\r\n\r\n**Valid Example**\r\n\r\nThis example is valid because a schema and examples are defined.\r\n\r\n```yaml\r\nget:\r\n  responses:\r\n    '200':\r\n      description: User Found\r\n      content:\r\n        application/json:\r\n          schema:\r\n           $ref: '#/components/schemas/User'\r\n         examples:\r\n           Get User Alice Smith:\r\n              value:\r\n               id: 142\r\n               firstName: Alice\r\n               lastName: Smith\r\n               email: alice.smith@gmail.com\r\n               dateOfBirth: '1997-10-31'\r\n               emailVerified: true\r\n               signUpDate: '2019-08-24'\r\n```\r\n",
+      "message": "No example or schema provided for {{property}}",
+      "formats": [
+        "oas3"
+      ]
+    },
+    "docs-tags-alphabetical": {
+      "given": [
+        "$"
+      ],
+      "severity": "warn",
+      "then": {
+        "function": "alphabetical",
+        "functionOptions": {
+          "keyedBy": "name"
+        },
+        "field": "tags"
+      },
+      "description": "Tags are not in alphabetical order.\r\n\r\nMany documentation tools show tags in the order they are defined.\r\n\r\n**Invalid Example**\r\n\r\nThis example is invalid because the tag names are not in alphabetical order.\r\n\r\n```yaml\r\ntags:\r\n  - name: Users\r\n    description: ...\r\n  - name: Customers\r\n    description: ...\r\n```\r\n\r\n**Valid Example**\r\n\r\nThis example is valid because the tag names are in alphabetical order.\r\n\r\n```yaml\r\ntags:\r\n  - name: Users\r\n    description: ...\r\n  - name: Customers\r\n    description: ...\r\n```",
+      "message": "Tags should be defined in alphabetical order"
+    },
+    "docs-operation-tags": {
+      "given": [
+        "#OperationObject"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "schema",
+        "functionOptions": {
+          "schema": {
+            "type": "array",
+            "minItems": 1
+          }
+        },
+        "field": "tags"
+      },
+      "description": "Operation must have at least one tag.\r\n\r\nTags help group logic into conceptual groups instead of making end users dig through URLs or lists of operation names. \r\n\r\nIn Stoplight, tags are used to [order operations in the project sidebar/table of contents](https://docs.stoplight.io/docs/platform/ac20d67e16ae6-project-sidebar#endpoint-group-reordering). \r\n\r\n**Invalid Example**\r\n\r\nA tag is missing from the `get` operation.\r\n\r\n```yaml\r\n    get:\r\n      ...\r\n      tags: []\r\n      responses:\r\n        ...\r\n```\r\n**Valid Example**\r\n\r\nA tag is included for the `get` operation.\r\n\r\n```yaml\r\n    get:\r\n      ...\r\n      tags: [User]\r\n      responses:\r\n        ...\r\n```",
+      "message": "Operation should have non-empty `tags` array."
+    }
+  },
+  "functionsDir": "functions"
+}

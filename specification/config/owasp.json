@@ -1,0 +1,668 @@
+{
+  "description": "**Set of rules to enforce [OWASP security guidelines](https://owasp.org/www-project-api-security/)**.\n\nTo use these rules:\n \n1. Go to your Stoplight workspace.\n2. Create a [style guide project](https://meta.stoplight.io/docs/platform/364e30f79daa0-create-a-style-guide) OR edit a project that has an API.\n3. Select **Manage Style Guides**.\n4. Enable `OWASP Top 10` from list of public style guides.\n\nYou can then:\n\n- Use the style guide as-is to [automatically lint](https://meta.stoplight.io/docs/platform/7975f76a794c4-validation-and-linting) your API files\n- [Disable individual rules](https://meta.stoplight.io/docs/platform/3f80fd36750e3-disable-inherited-rules)  that do not follow your organization's standards\n- [Reuse and customize rules](https://meta.stoplight.io/docs/platform/2331c5241ddfc) to meet your needs\n\nIf you have suggestions on how to improve the ruleset or find any bugs, you can open an issue [here](https://github.com/stoplightio/spectral-owasp-ruleset).",
+  "formats": [
+    "oas2",
+    "oas3",
+    "oas3.0",
+    "oas3.1"
+  ],
+  "aliases": {
+    "JWT": {
+      "description": "",
+      "targets": [
+        {
+          "formats": [
+            "oas3"
+          ],
+          "given": [
+            "$.components.securitySchemes[?(@ && @.type==\"oauth2\")]",
+            "$.components.securitySchemes[?(@ && (@.bearerFormat==\"jwt\" || @.bearerFormat==\"JWT\"))]"
+          ]
+        },
+        {
+          "formats": [
+            "oas2"
+          ],
+          "given": [
+            "$.components.securitySchemes[?(@ && @.type==\"oauth2\")]",
+            "$.components.securitySchemes[?(@ && (@.bearerFormat==\"jwt\" || @.bearerFormat==\"JWT\"))]"
+          ]
+        }
+      ]
+    },
+    "ArrayProperties": {
+      "description": "",
+      "targets": [
+        {
+          "formats": [
+            "oas2"
+          ],
+          "given": [
+            "$..[?(@ && @.type==\"array\")]"
+          ]
+        },
+        {
+          "formats": [
+            "oas3.0"
+          ],
+          "given": [
+            "$..[?(@ && @.type==\"array\")]"
+          ]
+        },
+        {
+          "formats": [
+            "oas3.1"
+          ],
+          "given": [
+            "$..[?(@ && @.type==\"array\")]",
+            "$..[?(@ && @.type && @.type.constructor.name === \"Array\" && @.type.includes(\"array\"))]"
+          ]
+        }
+      ]
+    },
+    "IntegerProperties": {
+      "description": "",
+      "targets": [
+        {
+          "formats": [
+            "oas2"
+          ],
+          "given": [
+            "$..[?(@ && @.type==\"integer\")]"
+          ]
+        },
+        {
+          "formats": [
+            "oas3.0"
+          ],
+          "given": [
+            "$..[?(@ && @.type==\"integer\")]"
+          ]
+        },
+        {
+          "formats": [
+            "oas3.1"
+          ],
+          "given": [
+            "$..[?(@ && @.type==\"integer\")]",
+            "$..[?(@ && @.type && @.type.constructor.name === \"Array\" && @.type.includes(\"integer\"))]"
+          ]
+        }
+      ]
+    },
+    "StringProperties": {
+      "description": "",
+      "targets": [
+        {
+          "formats": [
+            "oas2"
+          ],
+          "given": [
+            "$..[?(@ && @.type==\"string\")]"
+          ]
+        },
+        {
+          "formats": [
+            "oas3.0"
+          ],
+          "given": [
+            "$..[?(@ && @.type==\"string\")]"
+          ]
+        },
+        {
+          "formats": [
+            "oas3.1"
+          ],
+          "given": [
+            "$..[?(@ && @.type==\"string\")]",
+            "$..[?(@ && @.type && @.type.constructor.name === \"Array\" && @.type.includes(\"string\"))]"
+          ]
+        }
+      ]
+    }
+  },
+  "rules": {
+    "oas2-always-use-https": {
+      "given": [
+        "$.schemes[*]"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "enumeration",
+        "functionOptions": {
+          "values": [
+            "https"
+          ]
+        }
+      },
+      "description": "Host schemes must use the HTTPS protocol.\n\n`Applies to: OpenAPI 2.0`\n\n**Invalid Example**\n\n```json\n{  \n  \"schemes\": [\n    \"http\"\n  ],\n}\n```  \n\n**Valid Example**\n\n```json\n{  \n  \"schemes\": [\n    \"https\"\n  ],\n}\n```  ",
+      "message": "API host schemes must use the HTTPS protocol.",
+      "formats": [
+        "oas2"
+      ]
+    },
+    "oas3-always-use-https": {
+      "given": [
+        "$.servers[*].url"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "pattern",
+        "functionOptions": {
+          "match": "(http:\\/\\/localhost)|(https).*"
+        }
+      },
+      "description": "Servers must use the HTTPS protocol, except when localhost is used.\n\n`Applies to: OpenAPI 3.0 and 3.1`\n\n**Invalid Example**\n\n```json lineNumbers\n{  \n  \"servers\": [\n    {\n      \"url\": \"http://acme.org/api/2.5\"\n    }\n  ]\n}\n```\n**Valid Examples**\n\nHTTPS example:\n\n```json lineNumbers\n{  \n  \"servers\": [\n    {\n      \"url\": \"https://acme.org/api/2.5\"\n    }\n  ],\n}\n```\nLocalhost example:\n\n```json lineNumbers\n{\n  \"servers\": [\n    {\n      \"url\": \"http://localhost:3000\"\n    }\n  ],\n}\n",
+      "message": "Servers must use the HTTPS protocol except when using localhost",
+      "formats": [
+        "oas3"
+      ]
+    },
+    "owasp:api2:2019-protection-global-unsafe": {
+      "given": [
+        "$"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "check-security",
+        "functionOptions": {
+          "schemesPath": [
+            "securitySchemes"
+          ],
+          "methods": [
+            "post",
+            "patch",
+            "delete",
+            "put"
+          ],
+          "nullable": true
+        }
+      },
+      "description": "POST. PUT, PATCH, and DELETE operations must be protected by a security scheme at either the global level or operation level. \n\nSecurity rules are defined in the `securityScheme` section.\n\n**Valid Example: Global**\n\n```yaml lineNumbers\n  securitySchemes:\n    API Key:\n      name: API Key\n      type: apiKey\n      in: header\nsecurity:\n  - API Key: []\n```\n\n***Valid Example: Operation**\n\n```yaml lineNumbers\npaths:\n  '/users/{userId}':\n    patch:\n      ...\n      responses:\n        ...\n      security:\n        - API Key: []\n```",
+      "message": "The following unsafe operation is not protected by a `security` rule: {{path}}"
+    },
+    "owasp:api1:2019-no-numeric-ids": {
+      "given": [
+        "$.paths..parameters[*][?(@property === \"name\" && (@ === \"id\" || @.match(/(_id|Id)$/)))]^.schema"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "schema",
+        "functionOptions": {
+          "schema": {
+            "type": "object",
+            "not": {
+              "properties": {
+                "type": {
+                  "const": "integer"
+                }
+              }
+            },
+            "properties": {
+              "format": {
+                "const": "uuid"
+              }
+            }
+          }
+        }
+      },
+      "description": "Path parameters must use random IDs that cannot be guessed, such as UUIDs.\n\n**Invalid Example**\n\nIn this example, the `{userId}` parameter has a type of `integer`.\n\n```yaml lineNumbers\npaths:\n  '/users/{userId}':\n    parameters:\n      - schema:\n          type: integer\n        name: userId\n        in: path\n        required: true\n        description: Id of an existing user.\n```\n\n**Valid Example**\n\nIn this example, the `{userId}` parameter has a type of `string` with a format of `uuid`.\n\n```yaml lineNumbers\npaths:\n  '/users/{userId}':\n    parameters:\n      - schema:\n          type: string\n          format: uuid\n        name: userId\n        in: path\n        required: true\n        description: Id of an existing user.\n```",
+      "message": "Use random IDs that cannot be guessed (UUIDs)"
+    },
+    "owasp:api2:2019-no-http-basic": {
+      "given": [
+        "$.components.securitySchemes[*]"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "pattern",
+        "functionOptions": {
+          "notMatch": "basic"
+        },
+        "field": "scheme"
+      },
+      "description": "Security scheme must not use basic auth. Use a more secure authentication method, such as OAuth 2.0.\r\n\r\n**Invalid Example**\r\n\r\n``` yaml lineNumbers\r\nsecuritySchemes:\r\n    basicAuth:\r\n      type: http\r\n      scheme: basic\r\n```\r\n\r\n**Valid Example**\r\n\r\n``` yaml lineNumbers\r\nsecuritySchemes:\r\n    OAuth2:\r\n      type: oauth2\r\n      flows:\r\n        ...\r\n          ...\r\n          ...\r\n          ...\r\n          ...\r\n```",
+      "message": "{{property}} uses basic auth. Use a more secure authentication method, like OAuth 2.0."
+    },
+    "api2:2019-no-api-keys-in-url": {
+      "given": [
+        "$.components.securitySchemes[?(@ && @.type==\"apiKey\")].in"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "pattern",
+        "functionOptions": {
+          "notMatch": "^(query)$"
+        }
+      },
+      "description": "Security scheme must not contain API Keys in query parameters.\n\nAPI Keys are (usually opaque) strings that can be eavesdropped, especially when they are passed as URL parameters.\n\n**Invalid Example**\n\nThe `in:query` setting makes this example invalid.\n\n```yaml lineNumbers\n  securitySchemes:\n    API Key:\n      name: API Key\n      type: apiKey\n      in: query\n```\n\n**Valid Example**\n\nThe `in:header` makes this example valid.\n\n```yaml lineNumbers\n  securitySchemes:\n    API Key:\n      name: API Key\n      type: apiKey\n      in: header\n```",
+      "message": "ApiKey passed in URL: {{error}}",
+      "formats": [
+        "oas3"
+      ]
+    },
+    "owasp:api2:2019-no-credentials-in-url": {
+      "given": [
+        "$..parameters[?(@ && @.in && @.in.match(/query|path/))].name"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "pattern",
+        "functionOptions": {
+          "notMatch": "/^.*(password|secret|apikey).*$/i"
+        }
+      },
+      "description": "Path parameter must not contain credentials, such as API key, password, or secret.\n\n**Invalid Example**\n\nThis example is invalid because the path parameter includes a string with the name `password`. \n\n```yaml lineNumbers\npaths:\n  '/user/{password}':\n    parameters:\n      - schema:\n          type: string\n          format: password\n        name: password\n        in: path\n        required: true\n```\n\n**Valid Example**\n\nRemove the invalid path parameter. \n\n```yaml lineNumbers\npaths:\n  '/user/\n```",
+      "message": "Security credentials detected in path parameter: {{value}}.",
+      "formats": [
+        "oas3"
+      ]
+    },
+    "owasp:api2:2019-auth-insecure-schemes": {
+      "given": [
+        "$.components.securitySchemes[?(@.type==\"http\")].scheme"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "pattern",
+        "functionOptions": {
+          "notMatch": "^(negotiate|oauth)$"
+        }
+      },
+      "description": "Security scheme must use a secure method.\r\n\r\n`negotiate` and `auth2` are considered to be insecure security schemes.\r\n\r\n**Invalid Example**\r\n\r\nThis example is invalid because `oauth` is considered an insecure scheme.\r\n\r\n```yaml lineNumbers\r\nsecuritySchemes:\r\n   Oauth1:\r\n     type: http\r\n     scheme: oauth\r\n```\r\n\r\n**Valid Example**\r\n\r\n```yaml lineNumbers\r\nsecuritySchemes:\r\n   Bearer:\r\n     type: http\r\n     scheme: bearer\r\n```",
+      "message": "Authentication scheme is considered outdated or insecure: {{value}}.",
+      "formats": [
+        "oas3"
+      ]
+    },
+    "owasp:api2:2019-jwt-best-practices": {
+      "given": [
+        "#JWT"
+      ],
+      "severity": "error",
+      "then": [
+        {
+          "function": "truthy",
+          "field": "description"
+        },
+        {
+          "function": "pattern",
+          "functionOptions": {
+            "match": ".*RFC8725.*"
+          },
+          "field": "description"
+        }
+      ],
+      "description": "Security scheme description must state that the implementation conforms with JSON Web Tokens RFC7519, the JSON Web Token standard.\n\n**Invalid Example**\n\nThis example is invalid because RFC8726 is not included in the security scheme description.\n\n```yaml lineNumbers\nJWTBearer:\n      type: oauth2\n      flows:\n        authorizationCode:\n          ...\n          ...\n          ...\n          ...\n      description: A bearer token in the format of a JWS.\n```\n\n**Valid Example**\n\n```yaml lineNumbers\nJWTBearer:\n      type: oauth2\n      flows:\n        authorizationCode:\n          ...\n          ...\n          ...\n          ...\n      description: A bearer token in the format of a JWS and conforms to the specifications included in RFC8725.\n```"
+    },
+    "owasp:api2:2019-protection-global-unsafe-strict": {
+      "given": [
+        "$"
+      ],
+      "severity": "info",
+      "then": {
+        "function": "check-security",
+        "functionOptions": {
+          "schemesPath": [
+            "securitySchemes"
+          ],
+          "methods": [
+            "post",
+            "patch",
+            "delete",
+            "put"
+          ],
+          "nullable": false
+        }
+      },
+      "description": "POST, PATCH, DELETE, and PUT operations should be protected by a security scheme at either the global level or operation level. \n\nSecurity rules are defined in the `securityScheme` section.\n\n**Invalid Example**\n\nThe PATCH operation has an empty security value so it is not protected. \n\n```yaml lineNumbers\npaths:\n  '/users/{userId}':\n    patch:\n      ...\n      responses:\n        ...\n      security:\n      - []\n```\n\n**Valid Example**\n\nThe PATCH operation is protected by the API Key. As an alternative, remove the empty security setting at the operation level and use global security. \n\n```yaml lineNumbers\npaths:\n  '/users/{userId}':\n    patch:\n      ...\n      responses:\n        ...\n      security:\n        - API Key: []\n```",
+      "message": "{{error}}"
+    },
+    "owasp:api2:2019-protection-global-safe": {
+      "given": [
+        "$"
+      ],
+      "severity": "info",
+      "then": {
+        "function": "check-security",
+        "functionOptions": {
+          "schemesPath": [
+            "securitySchemes"
+          ],
+          "methods": [
+            "get",
+            "head"
+          ],
+          "nullable": true
+        }
+      },
+      "description": "GET and HEAD operations should be protected by a security scheme at either the global level or operation level. \n\nSecurity rules are defined in the `securityScheme` section.\n\n**Valid Example: Global**\n\n```yaml lineNumbers\n  securitySchemes:\n    API Key:\n      name: API Key\n      type: apiKey\n      in: header\nsecurity:\n  - API Key: []\n```\n\n***Valid Example: Operation**\n\n```yaml lineNumbers\npaths:\n  '/users/{userId}':\n    get:\n      ...\n      responses:\n        ...\n      security:\n        - API Key: []\n```",
+      "message": "The following unsafe operation is not protected by a `security` rule: {{path}}"
+    },
+    "owasp:api3:2019-define-error-validation": {
+      "given": [
+        "$.paths..responses"
+      ],
+      "severity": "warn",
+      "then": {
+        "function": "schema",
+        "functionOptions": {
+          "schema": {
+            "type": "object",
+            "anyOf": [
+              {
+                "required": [
+                  "400"
+                ]
+              },
+              {
+                "required": [
+                  "422"
+                ]
+              },
+              {
+                "required": [
+                  "4XX"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "description": "Operation must have a 400, 422 or 4xx response defined.\r\n\r\n**Invalid Example**\r\n\r\n```yaml lineNumbers\r\nget:\r\n  summary: Get User Info by User ID\r\n  tags: []\r\n  responses:\r\n    '200':\r\n       ...\r\n    '404':\r\n      description: User Not Found\r\n      headers:\r\n        ...\r\n```\r\n\r\n**Valid Example**\r\n\r\n```yaml lineNumbers\r\nget:\r\n  summary: Get User Info by User ID\r\n  tags: []\r\n  responses:\r\n    '200':\r\n       ...\r\n    '400':\r\n      description: Bad Request\r\n      headers:\r\n      ...\r\n```",
+      "message": "Missing error response of either 400, 422 or 4XX."
+    },
+    "owasp:api4:2019-rate-limit-responses-429": {
+      "given": [
+        "$.paths..responses"
+      ],
+      "severity": "warn",
+      "then": [
+        {
+          "function": "truthy",
+          "field": "429"
+        },
+        {
+          "function": "truthy",
+          "field": "429.content"
+        }
+      ],
+      "description": "Operation must have a 429 response defined.\r\n\r\n**Invalid Example**\r\n\r\n```yaml lineNumbers\r\nget:\r\n  summary: Get User Info by User ID\r\n  tags: []\r\n  responses:\r\n    '200':\r\n       ...\r\n    '400':\r\n      ...\r\n    '431':\r\n      description: Request Header Fields Too Large\r\n      headers:\r\n        ...\r\n```\r\n\r\n**Valid Example**\r\n\r\n```yaml lineNumbers\r\nget:\r\n  summary: Get User Info by User ID\r\n  tags: []\r\n  responses:\r\n    '200':\r\n       ...\r\n    '400':\r\n      ...\r\n    '429':\r\n      description: Too Many Requests\r\n      headers:\r\n        ...\r\n```",
+      "message": "{{description}}. Missing {{property}}"
+    },
+    "owasp:api3:2019-define-error-responses-500": {
+      "given": [
+        "$.paths..responses"
+      ],
+      "severity": "warn",
+      "then": [
+        {
+          "function": "truthy",
+          "field": "500"
+        },
+        {
+          "function": "truthy",
+          "field": "500.content"
+        }
+      ],
+      "description": "Operation must have a  response defined.\r\n\r\n**Invalid Example**\r\n\r\n```yaml lineNumbers\r\nget:\r\n  summary: Get User Info by User ID\r\n  tags: []\r\n  responses:\r\n    '200':\r\n       ...\r\n    '400':\r\n      ...\r\n    '501':\r\n      description: Bad Gateway\r\n      headers:\r\n        ...\r\n```\r\n\r\n**Valid Example**\r\n\r\n```yaml lineNumbers\r\nget:\r\n  summary: Get User Info by User ID\r\n  tags: []\r\n  responses:\r\n    '200':\r\n       ...\r\n    '400':\r\n      ...\r\n    '429':\r\n        ...\r\n    '500':\r\n      description: Internal Server Error\r\n      headers:\r\n        ...\r\n```",
+      "message": "{{description}}. Missing {{property}}"
+    },
+    "owasp:api4:2019-rate-limit": {
+      "given": [
+        "$.paths[*]..responses[?(@property.match(/^(2|4)/))]"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "schema",
+        "functionOptions": {
+          "schema": {
+            "type": "object",
+            "oneOf": [
+              {
+                "required": [
+                  "RateLimit-Limit",
+                  "RateLimit-Reset"
+                ]
+              },
+              {
+                "required": [
+                  "X-RateLimit-Limit"
+                ]
+              },
+              {
+                "required": [
+                  "X-Rate-Limit-Limit"
+                ]
+              }
+            ]
+          }
+        },
+        "field": "headers"
+      },
+      "description": "Headers for 2xx and 4 xx responses must contain `RateLimit-Limit`, `RateLimit-Reset`, `X-RateLimit-Limit`, or `X-Rate-Limit-Limit`.\n\nProper rate limits avoid attackers overloading the API. There are many ways to implement rate-limiting, but most of them involve using HTTP headers, and there are two popular ways to do that:\n\nIETF Draft HTTP RateLimit Headers:. https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/\n\nCustomer headers like X-Rate-Limit-Limit (Twitter: https://developer.twitter.com/en/docs/twitter-api/rate-limits) or X-RateLimit-Limit (GitHub: https://docs.github.com/en/rest/overview/resources-in-the-rest-api)\n\n**Invalid Example**\n\nThe 200 response does not contain rate-limiting headers.\n\n```yaml lineNumbers\nresponses:\n'200':\n   description: User Not Found\n```\n\n**Valid Example**\n\nThe 200 response contains rate-limiting headers.\n\n```yaml lineNumbers\nresponses:\n  '200':\n    headers:\n      RateLimit-Limit:\n        description: The number of allowed requests in the current period.\n        schema:\n          type: integer\n      RateLimit-Reset:\n        description: The number of seconds left in the current period.\n        schema:\n          type: integer\n```",
+      "message": "All 2XX and 4XX responses should define rate limiting headers.",
+      "formats": [
+        "oas3"
+      ]
+    },
+    "owasp:api4:2019-rate-limit-retry-after": {
+      "given": [
+        "$..responses[429].headers"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "defined",
+        "field": "Retry-After"
+      },
+      "description": "Headers for 429 responses must contain `Retry-After`.\r\n\r\n**Invalid Example**\r\n\r\n```yaml lineNumbers\r\n'429':\r\n      description: Too Many Requests\r\n      headers:\r\n        RateLimit-Limit:\r\n          ...\r\n        RateLimit-Reset:\r\n          ...\r\n```\r\n\r\n**Valid Example**\r\n\r\n```yaml lineNumbers\r\n'429':\r\n   headers:\r\n    RateLimit-Limit:\r\n      ...\r\n    RateLimit-Reset:\r\n      ...\r\n    Retry-After:\r\n      description: The number of seconds to wait before allowing a follow-up request.\r\n        schema:\r\n          type: integer\r\n```",
+      "message": "A 429 response should define a Retry-After header."
+    },
+    "owasp:api6:2019-no-additionalProperties": {
+      "given": [
+        "$..[?(@ && @.type==\"object\" && @.additionalProperties)]"
+      ],
+      "severity": "warn",
+      "then": {
+        "function": "falsy",
+        "field": "additionalProperties"
+      },
+      "description": "Object should not allow for additional properties, which can allow unspecified fields passed to the API without validation.\r\n\r\n**Invalid Example**\r\n\r\nIn this example, `additionalProperties` are allowed on the object. \r\n\r\n```yaml lineNumbers\r\n\r\nschemas:\r\n   User:\r\n     type: object\r\n     title: User\r\n      additionalProperties: true\r\n      properties:\r\n        id:\r\n          type: integer\r\n        firstName:\r\n          type: string\r\n        lastName:\r\n          type: string\r\n```\r\n**Valid Example**\r\n\r\nIn this example, `additionalProperties` are not allowed on the object. \r\n\r\n```yaml lineNumbers\r\n\r\nschemas:\r\n   User:\r\n     type: object\r\n     title: User\r\n     description: ''\r\n      additionalProperties: false\r\n      properties:\r\n        id:\r\n          type: integer\r\n        firstName:\r\n          type: string\r\n        lastName:\r\n          type: string\r\n```",
+      "message": "If the additionalProperties keyword is used it must be set to false.",
+      "formats": [
+        "oas3"
+      ]
+    },
+    "owasp:api6:2019-constrained-additionalProperties": {
+      "given": [
+        "$..[?(@ &&@.type==\"object\" && @.additionalProperties &&  @.additionalProperties!=true &&  @.additionalProperties!=false )] "
+      ],
+      "severity": "warn",
+      "then": [
+        {
+          "function": "falsy",
+          "field": "additionalProperties"
+        },
+        {
+          "function": "defined",
+          "field": "maxProperties"
+        }
+      ],
+      "description": "By default JSON Schema allows additional properties, which can potentially lead to mass assignment issues, where unspecified fields are passed to the API without validation.",
+      "message": "Objects should not allow unconstrained additionalProperties. Disable them with `additionalProperties: false` or add `maxProperties`.",
+      "formats": [
+        "oas3"
+      ]
+    },
+    "owasp:api4:2019-array-limit": {
+      "given": [
+        "#ArrayProperties"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "defined",
+        "field": "maxItems"
+      },
+      "description": "Array size should be limited to mitigate resource exhaustion attacks. This can be done using `maxItems`. You should ensure that the subschema in `items` is constrained too.",
+      "message": "Schema of type array must specify maxItems."
+    },
+    "owasp:api4:2019-string-limit": {
+      "given": [
+        "#StringProperties"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "schema",
+        "functionOptions": {
+          "schema": {
+            "type": "object",
+            "oneOf": [
+              {
+                "required": [
+                  "maxLength"
+                ]
+              },
+              {
+                "required": [
+                  "enum"
+                ]
+              },
+              {
+                "required": [
+                  "const"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "description": "String size should be limited to mitigate resource exhaustion attacks. This can be done using `maxLength`.",
+      "message": "Schema of type string, enum or const must specify maxItems."
+    },
+    "owasp:api4:2019-string-restricted": {
+      "given": [
+        "#StringProperties"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "schema",
+        "functionOptions": {
+          "schema": {
+            "type": "object",
+            "oneOf": [
+              {
+                "required": [
+                  "format"
+                ]
+              },
+              {
+                "required": [
+                  "pattern"
+                ]
+              },
+              {
+                "required": [
+                  "enum"
+                ]
+              },
+              {
+                "required": [
+                  "const"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "description": "To avoid unexpected values being sent or leaked, ensure that strings have either a format or a RegEx pattern. This can be done using `format` or `pattern`.",
+      "message": "Schema of type string must specify a format, enum, const or pattern."
+    },
+    "owasp:api4:2019-integer-limit": {
+      "given": [
+        "#IntegerProperties"
+      ],
+      "severity": "error",
+      "then": [
+        {
+          "function": "xor",
+          "functionOptions": {
+            "properties": [
+              "minimum",
+              "exclusiveMaximum"
+            ]
+          }
+        },
+        {
+          "function": "xor",
+          "functionOptions": {
+            "properties": [
+              "maximum",
+              "exclusiveMaximum"
+            ]
+          }
+        }
+      ],
+      "description": "Array size should be limited to mitigate resource exhaustion attacks. This can be done using `maxItems`. You should ensure that the subschema in `items` is constrained too.",
+      "message": "Schema of type integer must specify minimum and maximum.",
+      "formats": [
+        "oas3.1"
+      ]
+    },
+    "owasp:api4:2019-integer-limit-legacy": {
+      "given": [
+        "#IntegerProperties"
+      ],
+      "severity": "error",
+      "then": [
+        {
+          "function": "defined",
+          "field": "minimum"
+        },
+        {
+          "function": "defined",
+          "field": "maximum"
+        }
+      ],
+      "description": "Array size should be limited to mitigate resource exhaustion attacks. This can be done using `maxItems`. You should ensure that the subschema in `items` is constrained too.",
+      "message": "Schema of type integer must specify minimum and maximum.",
+      "formats": [
+        "oas3.0",
+        "oas2"
+      ]
+    },
+    "owasp:api4:2019-integer-format": {
+      "given": [
+        "#IntegerProperties"
+      ],
+      "severity": "error",
+      "then": {
+        "function": "defined",
+        "field": "format"
+      },
+      "description": "Integers should be limited to mitigate resource exhaustion attacks. Specifying whether int32 or int64 is expected via `format`.",
+      "message": "Schema of type integer must specify format (int32 or int64)."
+    },
+    "owasp:api3:2019-define-error-responses-401": {
+      "given": [
+        "$.paths..responses"
+      ],
+      "severity": "warn",
+      "then": [
+        {
+          "function": "truthy",
+          "field": "401"
+        },
+        {
+          "function": "truthy",
+          "field": "401.content"
+        }
+      ],
+      "description": "Operation must have a 401 response defined.\r\n\r\n**Invalid Example**\r\n\r\n```yaml lineNumbers\r\nget:\r\n  summary: Get User Info by User ID\r\n  tags: []\r\n  responses:\r\n    '200':\r\n       ...\r\n    '400':\r\n      ...\r\n    '501':\r\n      description: Bad Gateway\r\n      headers:\r\n        ...\r\n```\r\n\r\n**Valid Example**\r\n\r\n```yaml lineNumbers\r\nget:\r\n  summary: Get User Info by User ID\r\n  tags: []\r\n  responses:\r\n    '200':\r\n       ...\r\n    '400':\r\n      ...\r\n    '429':\r\n        ...\r\n    '401':\r\n      description: Not Authenticated\r\n      headers:\r\n        ...\r\n```",
+      "message": "{{description}}. Missing {{property}}"
+    }
+  },
+  "functions": [
+    "check-security"
+  ],
+  "functionsDir": "functions"
+}

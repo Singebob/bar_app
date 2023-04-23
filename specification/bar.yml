@@ -1,0 +1,13 @@
+openapi: '3.0.2'
+info:
+  title: Bars
+  version: '1.0'
+  description: 'Api that manage a bar and their stock'
+servers:
+  - url: https://api.server.test/v1
+paths:
+  /test:
+    get:
+      responses:
+        '200':
+          description: OK
