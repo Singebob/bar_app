@@ -15,4 +15,4 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v3
       - name: 'Run spectral'
-        run: spectral lint ./specification/bar.yml
+        run: spectral lint ./specification/bar.yml --ruleset ./specification/.spectral.yaml

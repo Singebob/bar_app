@@ -3,6 +3,10 @@ info:
   title: Bars
   version: '1.0'
   description: 'Api that manage a bar and their stock'
+  contact:
+    email: 'test@gmail.com'
+    name: 'test'
+    url: 'test.com'
 servers:
   - url: https://api.server.test/v1
 paths:
