@@ -1,0 +1,9 @@
+{
+    "root": true,
+    "private": true,
+    "description": "Apps that manage bar and their stock",
+    "workspaces": [
+        "front"
+    ],
+    "scripts": {}
+}
