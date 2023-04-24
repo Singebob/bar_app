@@ -26,6 +26,17 @@ paths:
           content:
             application/json:
               schema:
+                example:
+                  - name: Titan
+                    price: 2.5
+                    category: Beer
+                  - name: Saumur
+                    price: 10
+                    category: Wine
+                    image: https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png
+                  - name: Coca
+                    price: 1.5
+                    category: Soda
                 type: array
                 items:
                   $ref: '#/components/schemas/drink'
