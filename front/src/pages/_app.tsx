@@ -1,4 +1,4 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, Container } from '@chakra-ui/react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 
@@ -10,7 +10,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             </Head>
             <ChakraProvider>
                 <main>
-                    <Component {...pageProps} />
+                    <Container maxW="container.lg">
+                        <Component {...pageProps} />
+                    </Container>
                 </main>
             </ChakraProvider>
         </>
