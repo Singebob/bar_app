@@ -18,11 +18,17 @@ jobs:
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v3
               with:
-                node-version: ${{ matrix.node-version }}
-                cache: 'pnpm'
+                  node-version: ${{ matrix.node-version }}
+                  cache: 'pnpm'
             - name: Install dependencies
               run: pnpm i --frozen-lockfile
             - name: Run linter
-              run: pnpm lint
-            - name: Run build
-              run: pnpm run -r build
+              run: npm run lint
+            - name: Run tests end to end
+              run: npm run test:e2e -w front
+            - uses: actions/upload-artifact@v3
+              if: always()
+              with:
+                  name: E2E test report
+                  path: playwright-report/
+                  retention-days: 10
