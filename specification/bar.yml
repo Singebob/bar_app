@@ -35,7 +35,13 @@ paths:
           content:
             application/json:
               schema:
-                example:
+                type: array
+                maxItems: 100
+                items:
+                  $ref: '#/components/schemas/drink'
+              examples:
+                drinks_json:
+                  value:
                   - name: Titan
                     price: 2.5
                     category: Beer
@@ -46,10 +52,6 @@ paths:
                   - name: Coca
                     price: 1.5
                     category: Soda
-                type: array
-                maxItems: 100
-                items:
-                  $ref: '#/components/schemas/drink'
         '400':
           description: Bad Request.
           headers:
