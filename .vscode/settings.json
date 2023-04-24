@@ -5,5 +5,8 @@
     },
 
     // Fix only this rules on save
-    "eslint.codeActionsOnSave.rules": ["import/order"],
+    "eslint.codeActionsOnSave.rules": [
+        "import/order"
+    ],
+    "spectral.rulesetFile": "./specification/.spectral.yaml",
 }
