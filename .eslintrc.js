@@ -5,6 +5,7 @@ module.exports = {
     ignorePatterns: ['node_modules', 'dist', 'build', 'coverage', 'next.config.js', 'next-env.d.ts'],
     extends: [
         'eslint:recommended',
+        'next',
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:github/recommended',
@@ -27,6 +28,7 @@ module.exports = {
         'import/no-named-as-default-member': 'off', // takes too long
         'import/no-namespace': 'off', // enable namespaces
         // ERRORS
+        '@next/next/no-html-link-for-pages': ['error', 'front/src/pages'],
         '@typescript-eslint/no-unused-vars': 'error',
         'import/extensions': [
             'error',
