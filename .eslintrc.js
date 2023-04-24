@@ -2,7 +2,7 @@
 // eslint-disable-next-line import/no-commonjs, unicorn/prefer-module
 module.exports = {
     parser: '@typescript-eslint/parser',
-    ignorePatterns: ['node_modules', 'dist', 'build', 'coverage', 'next.config.js'],
+    ignorePatterns: ['node_modules', 'dist', 'build', 'coverage', 'next.config.js', 'next-env.d.ts'],
     extends: [
         'eslint:recommended',
         'plugin:@typescript-eslint/eslint-recommended',
