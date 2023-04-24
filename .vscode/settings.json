@@ -1,0 +1,9 @@
+{
+    // Editor-wide settings
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+
+    // Fix only this rules on save
+    "eslint.codeActionsOnSave.rules": ["import/order"],
+}
