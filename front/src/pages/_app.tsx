@@ -6,7 +6,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     return (
         <>
             <Head>
-                <title>Bar</title>
+                <title>Bars</title>
             </Head>
             <ChakraProvider>
                 <main>
