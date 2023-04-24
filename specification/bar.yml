@@ -9,9 +9,50 @@ info:
     url: 'test.com'
 servers:
   - url: https://api.server.test/v1
+tags:
+  - name: drinks
+    description: 'Drinks'
 paths:
-  /test:
+  /drinks:
     get:
+      summary: Get all drinks
+      description: Get all drinks
+      operationId: getDrinks
+      tags:
+        - drinks
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/drink'
+components:
+  schemas:
+    drink:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 50
+          description: Name of the drink
+          example: Beer
+        price:
+          type: number
+          minimum: 0
+          description: Price of the drink
+          example: 2.5
+        category:
+          type: string
+          maxLength: 50
+          pattern: '^[A-Z].+$'
+          description: Category of the drink
+          example: Beer
+        image:
+          type: string
+          format: uri
+          description: Image of the drink
+          example: https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png
+      required: [name, price, category]
