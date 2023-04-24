@@ -9,9 +9,17 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest]
-                pnpm: [8.0.0]
+                node-version: [18]
         steps:
             - uses: actions/checkout@v3
+            - uses: pnpm/action-setup@v2
+              with:
+                  version: 8
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                node-version: ${{ matrix.node-version }}
+                cache: 'pnpm'
             - name: Install dependencies
               run: pnpm i --frozen-lockfile
             - name: Run linter
