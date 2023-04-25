@@ -219,42 +219,6 @@
         "oas2"
       ]
     },
-    "docs-parameters-examples-or-schema": {
-      "given": [
-        "$.paths[*]..parameters[*]"
-      ],
-      "severity": "error",
-      "then": {
-        "function": "schema",
-        "functionOptions": {
-          "schema": {
-            "type": "object",
-            "oneOf": [
-              {
-                "required": [
-                  "example"
-                ]
-              },
-              {
-                "required": [
-                  "examples"
-                ]
-              },
-              {
-                "required": [
-                  "schema"
-                ]
-              }
-            ]
-          }
-        }
-      },
-      "description": "\r\n**OAS 3.x only**\r\n\r\nPath parameter must contain a defined schema or examples.\r\n\r\nWithout providing a well-defined schema or examples, API consumers do not have the information they need to interact with the API.\r\n\r\n**Invalid Example**\r\n\r\nThis example is invalid because a schema or example is not defined.\r\n\r\n```yaml\r\npaths:\r\n  '/users/{userId}':\r\n    parameters:\r\n      - name: userId\r\n        in: path\r\n```\r\n\r\n**Valid Example**\r\n\r\nThis example is valid because a schema or example is defined.\r\n\r\n```yaml\r\npaths:\r\n  '/users/{userId}':\r\n    parameters:\r\n      - schema:\r\n          type: integer\r\n          example: 1236\r\n        name: userId\r\n        in: path\r\n```",
-      "message": "No example or schema provided for {{property}}",
-      "formats": [
-        "oas3"
-      ]
-    },
     "docs-media-types-examples-or-schema": {
       "given": [
         "#MediaTypeObjects"

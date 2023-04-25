@@ -20,6 +20,20 @@ paths:
       summary: Get all drinks
       description: Get all drinks.
       operationId: getDrinks
+      parameters:
+      - name: size
+        description: Value of the example.
+        schema:
+          type: integer
+          format: int32
+        in: query
+        examples:
+          drinks_json:
+            value: 2
+          one_drink_json:
+            value: 1
+          no_drink_json:
+            value: 0
       tags:
         - drinks
       responses:
