@@ -10,11 +10,13 @@ import {
     Grid,
     Heading,
     Img,
+    Link,
     Spinner,
     Stack,
     Tag,
     Text,
 } from '@chakra-ui/react';
+import NextLink from 'next/link';
 import { useEffect, useState } from 'react';
 
 import { getDrinks } from '@/api/DrinkApi';
@@ -96,9 +98,11 @@ export default function Home() {
             )}
 
             <Center marginTop={4}>
-                <Button leftIcon={<AddIcon />} colorScheme="teal" variant="solid" rounded={5}>
-                    {drinks && drinks.length > 0 ? 'Ajouter une boisson' : 'Ajouter votre première boisson'}
-                </Button>
+                <Link as={NextLink} href="/drinks/add">
+                    <Button leftIcon={<AddIcon />} colorScheme="teal" variant="solid" rounded={5}>
+                        {drinks && drinks.length > 0 ? 'Ajouter une boisson' : 'Ajouter votre première boisson'}
+                    </Button>
+                </Link>
             </Center>
         </>
     );
