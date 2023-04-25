@@ -48,10 +48,19 @@ paths:
                   - name: Saumur
                     price: 10
                     category: Wine
-                    image: https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png
+                    image: https://media.carrefour.fr/medias/37b07916f00034a3bb6f4366711a1f15/p_540x540/3270190114185-photosite-20170510-161117-0.jpg
                   - name: Coca
                     price: 1.5
                     category: Soda
+                    image: https://i0.wp.com/commechezmams.fr/wp-content/uploads/2021/01/COCA-33cl.jpg?fit=800%2C800&ssl=1
+                one_drink_json:
+                  value:
+                  - name: Saumur
+                    price: 10
+                    category: Wine
+                    image: https://media.carrefour.fr/medias/37b07916f00034a3bb6f4366711a1f15/p_540x540/3270190114185-photosite-20170510-161117-0.jpg
+                no_drink_json:
+                  value: []
         '400':
           description: Bad Request.
           headers:
