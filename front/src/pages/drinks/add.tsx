@@ -4,7 +4,7 @@ export default function AddDrink() {
     const toast = useToast();
     return (
         <Stack alignItems={'center'}>
-            <Heading>Add Drink</Heading>
+            <Heading>Ajouter une boisson</Heading>
             <Input maxWidth={360}></Input>
             <Button
                 onClick={() => toast({ title: 'Pas implémenté', status: 'info', duration: 5000, isClosable: true })}
