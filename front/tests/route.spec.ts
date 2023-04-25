@@ -13,10 +13,9 @@ testMockOneDrink('should be able to route from home to add drink', async ({ page
     expect(page.url()).toContain(ADD_DRINK_PATH);
 });
 
-test.skip('should display toast when drink is added', async ({ page }) => {
+test('should display toast when drink is added', async ({ page }) => {
     await page.goto(ADD_DRINK_PATH);
 
     await page.getByRole('button', { name: 'Ajouter' }).click();
-
-    expect(page.getByText('Pas implémenté')).toBeVisible();
+    await expect(page.getByText('Pas implémenté')).toBeVisible();
 });
