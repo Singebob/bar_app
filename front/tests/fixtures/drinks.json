@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Coca",
+        "category": "Soda",
+        "price": 2.5,
+        "image": "https://i0.wp.com/commechezmams.fr/wp-content/uploads/2021/01/COCA-33cl.jpg?fit=800%2C800&ssl=1"
+    },
+    {
+        "name": "Orangina",
+        "category": "Soda",
+        "price": 2.5,
+        "image": "https://www.coursesu.com/media/produit/300x300/orangina-boisson-gazeuse-a-l-orange-33cl-0-33l-0-33l-1-1.jpg"
+    },
+    {
+        "name": "Ice Tea",
+        "category": "Soda",
+        "price": 2.5,
+        "image": "https://www.coursesu.com/media/produit/300x300/ice-tea-peche-boisson-gazeuse-au-the-peche-33cl-0-33l-0-33l-1-1.jpg"
+    }
+]
