@@ -4,7 +4,16 @@ import { Alert, AlertIcon, AlertTitle, Button, Center } from '@chakra-ui/react';
 export default function Home() {
     return (
         <>
-            <Alert status="info" flexDirection="column" alignItems="center" justifyContent="center" textAlign="center">
+            <Alert
+                status="info"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                maxWidth={400}
+                mx={'auto'}
+                textAlign="center"
+                rounded={5}
+            >
                 <AlertIcon />
                 <AlertTitle>Pas de boisson disponible pour le moment.</AlertTitle>
             </Alert>
