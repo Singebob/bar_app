@@ -28,6 +28,8 @@ jobs:
               run: npm run lint
             - name: Run tests end to end
               run: npm run test:e2e -w front
+              env:
+                  API_URL: http://localhost:3000
             - uses: actions/upload-artifact@v3
               if: always()
               with:
