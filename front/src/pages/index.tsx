@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
+import { getDrinks } from '@/api/DrinkApi';
 import { Drink } from '@/types/bar';
 
 export default function Home() {
@@ -24,9 +25,8 @@ export default function Home() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const fetchDrinks = async () => {
-        const response = await fetch('/api/drinks?page=1&size=2');
-        const data = await response.json();
-        setDrinks(data);
+        const drinksFetched = await getDrinks();
+        setDrinks(drinksFetched);
         setIsLoading(false);
     };
 

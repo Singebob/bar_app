@@ -30,7 +30,7 @@ async function expectDrink(locator: Locator, drink: Drink) {
     await expect(locator.getByAltText(drink.name)).toBeVisible();
 }
 
-const API_PATH = '**/api/drinks';
+const API_PATH = '**/api/drinks*';
 const CONTENT_TYPE = 'application/json';
 
 test('when no drinks are available, the user is informed with a alert', async ({ page }) => {
