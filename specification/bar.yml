@@ -28,12 +28,27 @@ paths:
           format: int32
         in: query
         examples:
-          drinks_json:
-            value: 2
-          one_drink_json:
-            value: 1
           no_drink_json:
             value: 0
+          one_drink_json:
+            value: 1
+          drinks_json:
+            value: 2
+      - name: page
+        description: Value of the example.
+        schema:
+          type: integer
+          format: int32
+        in: query
+        examples:
+          no_drink_json:
+            value: 1
+          one_drink_json:
+            value: 1
+          drinks_json:
+            value: 1
+          drinks_json_page_2:
+            value: 2
       tags:
         - drinks
       responses:
@@ -54,6 +69,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/drink'
               examples:
+                no_drink_json:
+                  value: []
+                one_drink_json:
+                  value:
+                  - name: Saumur
+                    price: 10
+                    category: Wine
+                    image: https://media.carrefour.fr/medias/37b07916f00034a3bb6f4366711a1f15/p_540x540/3270190114185-photosite-20170510-161117-0.jpg
                 drinks_json:
                   value:
                   - name: Titan
@@ -67,14 +90,15 @@ paths:
                     price: 1.5
                     category: Soda
                     image: https://i0.wp.com/commechezmams.fr/wp-content/uploads/2021/01/COCA-33cl.jpg?fit=800%2C800&ssl=1
-                one_drink_json:
+                drinks_json_page_2:
                   value:
-                  - name: Saumur
-                    price: 10
-                    category: Wine
-                    image: https://media.carrefour.fr/medias/37b07916f00034a3bb6f4366711a1f15/p_540x540/3270190114185-photosite-20170510-161117-0.jpg
-                no_drink_json:
-                  value: []
+                  - name: Orangina
+                    price: 1.5
+                    category: Soda
+                    image: https://www.cdiscount.com/pdt2/9/0/1/1/700x700/auc140000001001190/rw/orangina-33-cl.jpg
+                  - name: Heineken
+                    price: 2.5
+                    category: Beer
         '400':
           description: Bad Request.
           headers:
