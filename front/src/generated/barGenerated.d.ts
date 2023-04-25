@@ -78,6 +78,14 @@ export interface operations {
    * @description Get all drinks.
    */
   getDrinks: {
+    parameters: {
+      query: {
+        /** @description Value of the example. */
+        size?: number;
+        /** @description Value of the example. */
+        page?: number;
+      };
+    };
     responses: {
       /** @description OK */
       200: {
